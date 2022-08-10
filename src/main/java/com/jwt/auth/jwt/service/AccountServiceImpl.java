@@ -41,11 +41,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AppUser loadUserByUsername(String username) {
-        return null;
+        return appUserRepository.findByUsername(username);
     }
 
     @Override
     public List<AppUser> listUsers() {
-        return null;
+        return appUserRepository.findAll();
     }
 }

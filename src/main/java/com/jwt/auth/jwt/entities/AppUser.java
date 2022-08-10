@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -19,6 +20,6 @@ public class AppUser {
     private Long id;
     private String username;
     private String password;
-    @ManyToMany
-    private Collection<AppRole> appRoles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<AppRole> appRoles = new ArrayList<>();
 }
