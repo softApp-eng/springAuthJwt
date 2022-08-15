@@ -20,6 +20,7 @@ public class AuthJwtApplication {
     }
     @Bean
      PasswordEncoder passwordEncoder(){
+
         return new BCryptPasswordEncoder();
      }
     @Bean
