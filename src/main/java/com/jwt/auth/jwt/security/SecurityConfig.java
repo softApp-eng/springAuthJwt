@@ -2,10 +2,12 @@ package com.jwt.auth.jwt.security;
 
 import com.jwt.auth.jwt.entities.AppUser;
 import com.jwt.auth.jwt.filter.JwtAuthenticationFilter;
+import com.jwt.auth.jwt.filter.JwtAuthorizationFilter;
 import com.jwt.auth.jwt.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,11 +51,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);// imposer la statlesss
-        http.authorizeRequests().antMatchers("/h2-console/**").permitAll();
         http.headers().frameOptions().disable();
+        http.authorizeRequests().antMatchers("/h2-console/**","/refreshToken/**","/login/**").permitAll();
+// le chemin /login il est ajoute par defaut
+//       http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/**").hasAuthority("ADMIN");
+//       http.authorizeRequests().antMatchers(HttpMethod.GET,"/users/**").hasAuthority("USER");
         //http.formLogin();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new JwtAuthenticationFilter(authenticationManagerBean()));
+        http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
